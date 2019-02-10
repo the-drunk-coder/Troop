@@ -557,8 +557,6 @@ class MegraInterpreter(BuiltinInterpreter):
         
         Interpreter.start(self)
 
-        # Set any keywords e.g. d1 and $
-
         self.keywords  = ["s", "g", "cyc", "nuc", "clear", "always", "prob"] # update
         self.keywords.extend( ["%", "~"] )
 
@@ -588,11 +586,11 @@ class MegraInterpreter(BuiltinInterpreter):
     
     @staticmethod
     def format(string):
-        """ Used to formant multiple lines in haskell """
+        """ Used to formant multiple lines for sbcl """
         return string + "\n"
 
     def stop_sound(self):
-        """ Triggers the 'hush' command using Ctrl+. """
+        """ Triggers the 'clear' command using Ctrl+. """
         return "(clear)"    
     
 langtypes = { FOXDOT        : FoxDotInterpreter,
