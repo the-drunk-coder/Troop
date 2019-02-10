@@ -77,6 +77,8 @@ class ThreadSafeText(Text, OTClient):
         self.peers      = self.root.client.peers
         self.peer_tags  = []
 
+        self.ignoreOthers = False;
+        
         self.marker     = None
         self.local_peer = None
         
@@ -366,7 +368,8 @@ class ThreadSafeText(Text, OTClient):
 
         string = peer.highlight(message["start"], message["end"])
 
-        self.root.lang.evaluate(string, name=str(peer), colour=peer.bg)
+        if message["src_id"] == self.marker.id or not self.ignoreOthers:
+            self.root.lang.evaluate(string, name=str(peer), colour=peer.bg)
 
         return
 
@@ -375,7 +378,8 @@ class ThreadSafeText(Text, OTClient):
 
         peer = self.get_peer(message)
 
-        self.root.lang.evaluate(message["string"], name=str(peer), colour=peer.bg)
+        if message["src_id"] == self.marker.id or not self.ignoreOthers:
+            self.root.lang.evaluate(message["string"], name=str(peer), colour=peer.bg)
 
         return
 

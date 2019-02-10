@@ -85,7 +85,7 @@ class DummyInterface(BasicInterface):
         self.lang.start()
 
 class Interface(BasicInterface):
-    def __init__(self, client, title, language, logging=False):
+    def __init__(self, client, title, language, logging=False, ignoreOthers=False):
 
         # Inherit
 
@@ -93,6 +93,7 @@ class Interface(BasicInterface):
 
         self.lang = language
         self.interpreters = {name: BooleanVar() for name in langnames}
+        self.ignoreOthers = ignoreOthers
 
         self.client = client
 
@@ -156,6 +157,7 @@ class Interface(BasicInterface):
         self.text=ThreadSafeText(self, bg=COLOURS["Background"], fg="white", insertbackground=COLOURS["Background"],
                                     height=15, bd=0, highlightthickness=0, yscrollcommand=self.scroll.set)
 
+        self.text.ignoreOthers = self.ignoreOthers
         self.text.grid(row=0, column=1, sticky="nsew", columnspan=3)
         self.scroll.config(command=self.text.yview)
 

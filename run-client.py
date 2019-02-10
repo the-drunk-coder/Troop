@@ -38,6 +38,7 @@ parser.add_argument('-m', '--mode', action='store', default='foxdot',
 parser.add_argument('-a', '--args', action='store', help="Add extra arguments to supply to the interpreter", nargs=argparse.REMAINDER, type=str)
 parser.add_argument('-c', '--config', action='store_true', help="Load connection info from 'client.cfg'")
 parser.add_argument('-l', '--log', action='store_true')
+parser.add_argument('--ignoreOthers', action='store_true', help="Display code from other clients, but don't make it sound")
 
 # Add --host, --port?
 
@@ -51,7 +52,7 @@ from getpass import getpass
 
 # Client config options
 
-options = { 'lang': args.mode, 'logging': args.log }
+options = { 'lang': args.mode, 'logging': args.log, 'ignoreOthers': args.ignoreOthers }
 
 if args.public:
 

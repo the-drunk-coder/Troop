@@ -34,18 +34,19 @@ class Client:
         self.input = ConnectionInput(self, **kwargs)
         self.input.start()
 
-    def setup(self, host="", port="", name="", password="", lang=FOXDOT, args="", logging=False, ipv6=False):
+    def setup(self, host="", port="", name="", password="", lang=FOXDOT, args="", logging=False, ipv6=False, ignoreOthers=False):
 
         # ConnectionInput(host, port)
         
         self.hostname = str(host)
         self.port     = int(port)
+        self.ignoreOthers = bool(ignoreOthers)
         self.name     = str(name if name is not None else hostname)
         self.args     = args
         self.id       = None
 
         # Try and connect to server
-
+        
         try:
             
             self.send = Sender(self).connect(self.hostname, self.port, self.name, ipv6, password)
@@ -111,7 +112,7 @@ class Client:
         # Set up a user interface
 
         title = "Troop - {}@{}:{}".format(self.name, self.send.hostname, self.send.port)
-        self.ui = Interface(self, title, self.lang, logging)
+        self.ui = Interface(self, title, self.lang, logging, self.ignoreOthers)
         self.ui.init_local_user(self.id, self.name)
 
         # Send information about this client to the server
