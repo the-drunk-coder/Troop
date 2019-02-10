@@ -485,8 +485,6 @@ class SonicPiInterpreter(OSCInterpreter):
     def stop_sound(self):
         return 'osc_send({!r}, {}, "/stop-all-jobs")'.format(self.host, self.port)
 
-        
-
 class TidalInterpreter(BuiltinInterpreter):
     path = 'ghci'
     filetype = ".tidal"
@@ -540,13 +538,67 @@ class TidalInterpreter(BuiltinInterpreter):
     def stop_sound(self):
         """ Triggers the 'hush' command using Ctrl+. """
         return "hush"
-
+    
 class StackTidalInterpreter(TidalInterpreter):
     path = "stack ghci"
 
+
+class MegraInterpreter(BuiltinInterpreter):
+    path = 'sbcl'
+    filetype = ".megra"
+
+    def start(self):
+
+        # Import boot up code
+
+        from .boot.megra import bootstrap
+
+        self.bootstrap = bootstrap
+        
+        Interpreter.start(self)
+
+        # Set any keywords e.g. d1 and $
+
+        self.keywords  = ["s", "g", "cyc", "nuc", "clear", "always", "prob"] # update
+        self.keywords.extend( ["%", "~"] )
+
+        self.keyword_regex = compile_regex(self.keywords)
+        
+        return self
+
+    def __repr__(self):
+        return "Megra"
+
+    @classmethod
+    def find_comment(cls, string):        
+        instring, instring_char = False, ""
+        for i, char in enumerate(string):
+            if char in ('"', "'"):
+                if instring:
+                    if char == instring_char:
+                        instring = False
+                        instring_char = ""
+                else:
+                    instring = True
+                    instring_char = char
+            elif char == ";":
+                if not instring and (i + 1) < len(string) and string[i + 1] == "-":
+                    return [(i, len(string))]
+        return []
+    
+    @staticmethod
+    def format(string):
+        """ Used to formant multiple lines in haskell """
+        return string + "\n"
+
+    def stop_sound(self):
+        """ Triggers the 'hush' command using Ctrl+. """
+        return "(clear)"    
+    
 langtypes = { FOXDOT        : FoxDotInterpreter,
               TIDAL         : TidalInterpreter,
               TIDALSTACK    : StackTidalInterpreter,
               SUPERCOLLIDER : SuperColliderInterpreter,
               SONICPI       : SonicPiInterpreter,
+              MEGRA         : MegraInterpreter,
               DUMMY         : DummyInterpreter }
