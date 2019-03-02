@@ -557,7 +557,7 @@ class MegraInterpreter(BuiltinInterpreter):
         
         Interpreter.start(self)
 
-        self.keywords  = ["s", "g", "cyc", "nuc", "clear", "always", "prob"] # update
+        self.keywords  = ["s", "g", "cyc", "nuc", "clear", "always", "prob", "slearn", "infer"] # update
         self.keywords.extend( ["%", "~"] )
 
         self.keyword_regex = compile_regex(self.keywords)
@@ -587,7 +587,7 @@ class MegraInterpreter(BuiltinInterpreter):
     @staticmethod
     def format(string):
         """ Used to formant multiple lines for sbcl """
-        return string + "\n"
+        return "(ignore-errors " + string + ")\n"
 
     def stop_sound(self):
         """ Triggers the 'clear' command using Ctrl+. """
